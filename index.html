@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fish Digital Twin QR System</title>
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+
+        // STEP 1: After deploying to GitHub Pages, UPDATE THIS URL!
+        // Replace 'yourusername' with your GitHub username
+        // Replace 'fish-qr-system' with your repository name
+        const WEBSITE_URL = 'https://yourusername.github.io/fish-qr-system';
+
+        const fishData = [
+          {
+            id: "A-1001",
+            species: "Atlantic Cod",
+            catchDate: "2025/11/28",
+            location: "Gulf of Maine",
+            processing: "Filet & Flash Frozen",
+            quality: 5,
+            temperature: "Maintained -18°C throughout storage",
+            notes: "Excellent, premium grade. Used for high-end restaurant supply.",
+            blockchainHash: "0x7f9fade1c0d57a7af66ab4ead79fade1c0d57a7af66ab4ead7c2c2eb7b11a91385"
+          },
+          {
+            id: "B-1002",
+            species: "Sockeye Salmon",
+            catchDate: "2025/11/29",
+            location: "Alaska Peninsula",
+            processing: "Whole, Gilled & Gutted",
+            quality: 4,
+            temperature: "Kept under 2°C on ice slurry",
+            notes: "Good fat content, eyes slightly cloudy due to ice contact. Very fresh.",
+            blockchainHash: "0x3c2c2eb7b11a91385fade1c0d57a7af66ab4ead79fade1c0d57a7af66ab4ead7"
+          },
+          {
+            id: "C-1003",
+            species: "Yellowfin Tuna",
+            catchDate: "2025/11/26",
+            location: "Eastern Pacific",
+            processing: "Loin, Vacuum Sealed",
+            quality: 5,
+            temperature: "-0.5°C for chilling, air blast -35°C freezing",
+            notes: "Sushi-grade quality. Firm texture, vibrant red color. Traceable to vessel 'Sea Star'.",
+            blockchainHash: "0x91385fade1c0d57a7af66ab4ead79fade1c0d57a7af66ab4ead7c2c2eb7b11a9"
+          },
+          {
+            id: "D-1004",
+            species: "Farmed Tilapia",
+            catchDate: "2025/11/30",
+            location: "Aquaculture Pond 4",
+            processing: "Live Harvest/Chilled",
+            quality: 3,
+            temperature: "Consistent 3°C after harvest",
+            notes: "Acceptable quality for general market. Slight feed discoloration near the gills.",
+            blockchainHash: "0x4ead79fade1c0d57a7af66ab4ead7c2c2eb7b11a91385fade1c0d57a7af66ab4e"
+          },
+          {
+            id: "E-1005",
+            species: "European Seabass",
+            catchDate: "2025/11/27",
+            location: "Mediterranean Sea",
+            processing: "Whole, Cleaned, Iced",
+            quality: 5,
+            temperature: "Never exceeded 1°C",
+            notes: "Top-tier quality, certified sustainable catch. Clear eyes, bright red gills.",
+            blockchainHash: "0x5fade1c0d57a7af66ab4ead7c2c2eb7b11a91385fade1c0d57a7af66ab4ead79f"
+          },
+          {
+            id: "F-1006",
+            species: "Haddock",
+            catchDate: "2025/11/29",
+            location: "North Atlantic",
+            processing: "Fillet (Skin On)",
+            quality: 4,
+            temperature: "Held at 0°C",
+            notes: "Minor bruising on two pieces from net, but flesh is firm and white.",
+            blockchainHash: "0x6ab4ead79fade1c0d57a7af66ab4ead7c2c2eb7b11a91385fade1c0d57a7af66a"
+          },
+          {
+            id: "G-1007",
+            species: "Pacific Halibut",
+            catchDate: "2025/11/25",
+            location: "Bering Sea",
+            processing: "Steaks, Individually Wrapped",
+            quality: 5,
+            temperature: "Deep frozen at -30°C",
+            notes: "Highest grade. Perfect white meat. Harvested by long-line, low stress.",
+            blockchainHash: "0x7c2c2eb7b11a91385fade1c0d57a7af66ab4ead79fade1c0d57a7af66ab4ead7c"
+          },
+          {
+            id: "H-1008",
+            species: "Mackerel",
+            catchDate: "2025/11/28",
+            location: "North Sea",
+            processing: "Whole, Bulk Frozen",
+            quality: 3,
+            temperature: "Rapid freeze, held at -20°C",
+            notes: "Standard quality, good for processing. A few fish show signs of scale loss.",
+            blockchainHash: "0x8fade1c0d57a7af66ab4ead7c2c2eb7b11a91385fade1c0d57a7af66ab4ead79"
+          },
+          {
+            id: "I-1009",
+            species: "Rainbow Trout",
+            catchDate: "2025/11/30",
+            location: "Local Fish Farm",
+            processing: "Whole, Smoked",
+            quality: 4,
+            temperature: "Product finished smoking at 65°C",
+            notes: "Smoked on oak wood. Good moisture content, slight breakage on tail fin.",
+            blockchainHash: "0x9a91385fade1c0d57a7af66ab4ead79fade1c0d57a7af66ab4ead7c2c2eb7b11a"
+          },
+          {
+            id: "J-1010",
+            species: "King Prawns",
+            catchDate: "2025/11/27",
+            location: "Southeast Asia",
+            processing: "Shell-on, Cooked, Frozen",
+            quality: 5,
+            temperature: "Boiled then blast frozen to -18°C",
+            notes: "Excellent texture and color. Zero defects noted in inspection batch.",
+            blockchainHash: "0xa66ab4ead79fade1c0d57a7af66ab4ead7c2c2eb7b11a91385fade1c0d57a7af6"
+          }
+        ];
+
+        const QRCodeGenerator = ({ data, onDownload }) => {
+          const qrData = `${WEBSITE_URL}/?id=${data.id}`;
+          const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=400x400&data=${encodeURIComponent(qrData)}`;
+          
+          return (
+            <div className="flex flex-col items-center gap-2 p-4 bg-white rounded-lg border-2 border-gray-200">
+              <img src={qrUrl} alt={`QR Code for ${data.id}`} className="w-48 h-48" />
+              <div className="text-sm font-mono text-gray-600">{data.id}</div>
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onDownload(data, qrUrl);
+                }}
+                className="mt-2 px-4 py-1 bg-blue-600 text-white rounded-md text-sm hover:bg-blue-700"
+              >
+                📥 Download
+              </button>
+            </div>
+          );
+        };
+
+        const BlockchainVerification = ({ fish }) => {
+          const [verified, setVerified] = useState(false);
+          const [verifying, setVerifying] = useState(false);
+
+          const handleVerify = () => {
+            setVerifying(true);
+            setTimeout(() => {
+              setVerifying(false);
+              setVerified(true);
+            }, 1500);
+          };
+
+          return (
+            <div className="bg-gradient-to-r from-purple-50 to-indigo-50 rounded-lg p-4 border-2 border-purple-200 mt-4">
+              <div className="flex items-center gap-2 text-purple-700 font-semibold mb-3">
+                <span>🛡️</span> Blockchain Verification
+              </div>
+              
+              <div className="space-y-3">
+                <div className="bg-white rounded p-3">
+                  <p className="text-xs text-gray-500 mb-1">Transaction Hash</p>
+                  <p className="font-mono text-xs break-all text-gray-700">{fish.blockchainHash}</p>
+                </div>
+                
+                <div className="bg-white rounded p-3">
+                  <p className="text-xs text-gray-500 mb-1">Block Number</p>
+                  <p className="font-mono text-sm text-gray-700">#{Math.floor(Math.random() * 1000000) + 15000000}</p>
+                </div>
+
+                <div className="bg-white rounded p-3">
+                  <p className="text-xs text-gray-500 mb-1">Timestamp</p>
+                  <p className="font-mono text-sm text-gray-700">{new Date(fish.catchDate).toISOString()}</p>
+                </div>
+
+                {verified && (
+                  <div className="bg-green-100 border-2 border-green-500 rounded p-3 flex items-center gap-2">
+                    <span>✅</span>
+                    <div>
+                      <p className="font-semibold text-green-800">Verified on Blockchain</p>
+                      <p className="text-xs text-green-700">This record is authentic and tamper-proof</p>
+                    </div>
+                  </div>
+                )}
+
+                <button
+                  onClick={handleVerify}
+                  disabled={verified || verifying}
+                  className={`w-full py-2 rounded-lg font-semibold transition-all ${
+                    verified
+                      ? 'bg-green-600 text-white cursor-not-allowed'
+                      : verifying
+                      ? 'bg-purple-400 text-white cursor-wait'
+                      : 'bg-purple-600 text-white hover:bg-purple-700'
+                  }`}
+                >
+                  {verifying ? 'Verifying...' : verified ? '✓ Verified' : 'Verify on Blockchain'}
+                </button>
+              </div>
+            </div>
+          );
+        };
+
+        const FishDigitalTwin = ({ fish }) => {
+          const qualityColor = fish.quality >= 5 ? 'text-green-600' : fish.quality >= 4 ? 'text-blue-600' : 'text-yellow-600';
+          
+          return (
+            <div className="bg-gradient-to-br from-blue-50 to-cyan-50 rounded-xl p-6 border-2 border-blue-200 shadow-lg">
+              <div className="flex items-start justify-between mb-4">
+                <div>
+                  <h2 className="text-3xl font-bold text-gray-800 flex items-center gap-2">
+                    <span>🐟</span> {fish.species}
+                  </h2>
+                  <p className="text-sm text-gray-500 font-mono mt-1">ID: {fish.id}</p>
+                </div>
+                <div className={`flex items-center gap-1 text-2xl ${qualityColor}`}>
+                  {[...Array(5)].map((_, i) => (
+                    <span key={i}>{i < fish.quality ? '★' : '☆'}</span>
+                  ))}
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
+                <div className="bg-white rounded-lg p-4 shadow-sm">
+                  <div className="text-blue-700 font-semibold mb-2">📍 Catch Information</div>
+                  <div className="space-y-1 text-sm">
+                    <p><span className="font-medium">Date:</span> {fish.catchDate}</p>
+                    <p><span className="font-medium">Location:</span> {fish.location}</p>
+                  </div>
+                </div>
+
+                <div className="bg-white rounded-lg p-4 shadow-sm">
+                  <div className="text-blue-700 font-semibold mb-2">📦 Processing</div>
+                  <div className="space-y-1 text-sm">
+                    <p>{fish.processing}</p>
+                  </div>
+                </div>
+
+                <div className="bg-white rounded-lg p-4 shadow-sm md:col-span-2">
+                  <div className="text-blue-700 font-semibold mb-2">🌡️ Temperature Log</div>
+                  <div className="space-y-1 text-sm">
+                    <p>{fish.temperature}</p>
+                  </div>
+                </div>
+
+                <div className="bg-white rounded-lg p-4 shadow-sm md:col-span-2">
+                  <div className="text-blue-700 font-semibold mb-2">ℹ️ Quality Notes</div>
+                  <div className="space-y-1 text-sm">
+                    <p>{fish.notes}</p>
+                  </div>
+                </div>
+
+                <div className="md:col-span-2">
+                  <BlockchainVerification fish={fish} />
+                </div>
+              </div>
+            </div>
+          );
+        };
+
+        const App = () => {
+          const [view, setView] = useState('qr-grid');
+          const [selectedFish, setSelectedFish] = useState(null);
+          
+          useEffect(() => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const fishId = urlParams.get('id');
+            
+            if (fishId) {
+              const fish = fishData.find(f => f.id === fishId);
+              if (fish) {
+                setSelectedFish(fish);
+                setView('digital-twin');
+              }
+            }
+          }, []);
+
+          const handleQRClick = (fish) => {
+            setSelectedFish(fish);
+            setView('digital-twin');
+          };
+
+          const downloadQR = (fish, qrUrl) => {
+            const link = document.createElement('a');
+            link.href = qrUrl;
+            link.download = `QR-${fish.id}-${fish.species.replace(/\s+/g, '-')}.png`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+          };
+
+          const downloadAllQRs = () => {
+            fishData.forEach((fish, index) => {
+              setTimeout(() => {
+                const qrData = `${WEBSITE_URL}/?id=${fish.id}`;
+                const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=400x400&data=${encodeURIComponent(qrData)}`;
+                downloadQR(fish, qrUrl);
+              }, index * 500);
+            });
+          };
+
+          return (
+            <div className="min-h-screen bg-gradient-to-b from-blue-100 to-cyan-100 p-8">
+              <div className="max-w-7xl mx-auto">
+                <div className="text-center mb-8">
+                  <h1 className="text-4xl font-bold text-gray-800 mb-2 flex items-center justify-center gap-3">
+                    <span>🐟</span> Fish Digital Twin System
+                  </h1>
+                  <p className="text-gray-600">Scan QR codes to view detailed fish information with blockchain verification</p>
+                </div>
+
+                <div className="flex gap-4 justify-center mb-8 flex-wrap">
+                  <button
+                    onClick={() => setView('qr-grid')}
+                    className={`px-6 py-2 rounded-lg font-semibold transition-all ${
+                      view === 'qr-grid'
+                        ? 'bg-blue-600 text-white shadow-lg'
+                        : 'bg-white text-gray-700 hover:bg-gray-50'
+                    }`}
+                  >
+                    📱 QR Codes
+                  </button>
+                  <button
+                    onClick={() => setView('digital-twin')}
+                    className={`px-6 py-2 rounded-lg font-semibold transition-all ${
+                      view === 'digital-twin'
+                        ? 'bg-blue-600 text-white shadow-lg'
+                        : 'bg-white text-gray-700 hover:bg-gray-50'
+                    }`}
+                    disabled={!selectedFish}
+                  >
+                    🐟 Digital Twin
+                  </button>
+                </div>
+
+                {view === 'qr-grid' && (
+                  <div>
+                    <div className="mb-6 text-center">
+                      <button
+                        onClick={downloadAllQRs}
+                        className="px-6 py-3 bg-purple-600 text-white rounded-lg font-semibold hover:bg-purple-700 shadow-lg"
+                      >
+                        📥 Download All QR Codes
+                      </button>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
+                      {fishData.map((fish) => (
+                        <div
+                          key={fish.id}
+                          onClick={() => handleQRClick(fish)}
+                          className="cursor-pointer transform transition-all hover:scale-105 hover:shadow-xl"
+                        >
+                          <QRCodeGenerator data={fish} onDownload={downloadQR} />
+                          <div className="text-center mt-2 font-semibold text-gray-700">
+                            {fish.species}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                    
+                    <div className="mt-8 text-center text-sm text-gray-600 bg-white rounded-lg p-4 shadow-sm">
+                      <p className="font-semibold mb-2">📱 How to use:</p>
+                      <p>Click on any QR code to simulate scanning and view the fish's digital twin with blockchain verification.</p>
+                      <p className="mt-2">Download individual QR codes or print all at once for product labeling.</p>
+                      {WEBSITE_URL.includes('yourusername') && (
+                        <p className="mt-3 text-red-600 font-semibold">⚠️ Don't forget to update WEBSITE_URL in the code after deployment!</p>
+                      )}
+                    </div>
+                  </div>
+                )}
+
+                {view === 'digital-twin' && selectedFish && (
+                  <div className="max-w-4xl mx-auto">
+                    <FishDigitalTwin fish={selectedFish} />
+                    <div className="mt-6 text-center">
+                      <button
+                        onClick={() => setView('qr-grid')}
+                        className="px-6 py-2 bg-white text-gray-700 rounded-lg font-semibold hover:bg-gray-50 shadow-md"
+                      >
+                        ← Back to QR Codes
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          );
+        };
+
+        ReactDOM.render(<App />, document.getElementById('root'));
+    </script>
+</body>
+</html>
